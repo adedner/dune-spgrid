@@ -60,7 +60,7 @@ namespace Dune
     typedef typename NodeContainer::const_iterator Iterator;
 
     Interface ();
-    Interface ( const This &other );
+    Interface ( const Interface &other );
 
     ~Interface ();
 
@@ -255,7 +255,7 @@ namespace Dune
 
 
   template< int dim >
-  inline SPLinkage< dim >::Interface::Interface ( const This &other )
+  inline SPLinkage< dim >::Interface::Interface ( const Interface &other )
   {
     nodes_.reserve( other.nodes_.size() );
     const Iterator end = other.end();
