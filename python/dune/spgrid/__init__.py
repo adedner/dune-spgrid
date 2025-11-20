@@ -2,7 +2,7 @@ from __future__ import absolute_import, division, print_function, unicode_litera
 
 from dune.common.checkconfiguration import assertHave, ConfigurationError
 
-def spBisectionGrid(domain, dimgrid=None, ctype="double"):
+def spBisectionGrid(domain, dimgrid=None, ctype="double", **kwargs):
     from ..grid.grid_generator import module, getDimgrid
 
     if dimgrid is None:
@@ -31,15 +31,19 @@ def _checkModule(includes, typeName, typeTag):
 
 
 
-def spIsotropicGrid(domain, dimgrid=None, ctype="double", **kwargs):
+def spIsotropicGrid(domain, dimgrid=None, ctype="double", serial=False, **kwargs):
     from ..grid.grid_generator import module, getDimgrid
 
     if dimgrid is None:
         dimgrid = getDimgrid(domain)
 
-    typeName = "Dune::SPGrid< " + ctype + ", " + str(dimgrid) + ", Dune::SPIsotropicRefinement >"
     includes = ["dune/grid/spgrid.hh", "dune/grid/spgrid/dgfparser.hh"]
     typeTag = str(dimgrid) + "_" + ctype
+    commstr = ""
+    if serial:
+        commstr = ", Dune::No_Comm"
+        typeTag += "_nocomm"
+    typeName = "Dune::SPGrid< " + ctype + ", " + str(dimgrid) + ", Dune::SPIsotropicRefinement" + commstr + " >"
     gridModule = _checkModule(includes, typeName, typeTag)
 
     return gridModule.LeafGrid(gridModule.reader(domain))
